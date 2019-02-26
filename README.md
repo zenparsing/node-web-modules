@@ -41,6 +41,7 @@ The following features should remain open for exploration after MVP support is s
 - Support for importing additional file types such as JSON or WASM.
 - The ability to dynamically update bindings for node built-ins.
 - Exposing the node API using a new set of built-in modules.
+- A way to control deep package imports.
 
 ### Non-goals
 
@@ -75,12 +76,13 @@ import somethingElse from '../some-other-web-module.js';
 
 ```js
 import something from 'package';
-import somethingElse from 'package/a/b';
+import somethingElse from 'package/main.js';
 ```
 
 - Package imports are resolved using [export maps](https://github.com/jkrems/proposal-pkg-exports) contained within package.json files.
 - After resolving with an export map, the fully resolved path must point to a file with a valid web module extension.
 - File extensions are not automatically added to the resolved path.
+- Only string-valued export maps are supported by the MVP. Object-valued export maps will be supported post-MVP.
 
 Given a package URL path _specifier_, the URL will be resolved in the following manner:
 
@@ -89,10 +91,13 @@ Given a package URL path _specifier_, the URL will be resolved in the following 
 - For each `node_modules` folder _folder_ starting with the file system path of the current module:
   - If _folder_ contains a `package.json` file,
     - Read the contents of the `package.json` file as JSON into _pjson_.
+    - Let _match_ be `null`.
     - If _pjson_ contains a property "exports",
       - Let _match_ be the result of running the export map matching algorithm with _specifier_ and _pjson.exports_.
-      - If _match_ is not empty,
-        - Let _fullPath_ be the result of resolving _match_ relative to the file system path of the current module.
+    - Else,
+      - Let _match_ be _specifier_.
+    - If _match_ is not `null`,
+        - Let _fullPath_ be the result of resolving _match_ relative to the directory containing this `package.json` file.
         - If _fullPath_ points to a file with a valid web module extension,
           - Return the result of converting _fullPath_ to a file URL.
     - Break from this loop.

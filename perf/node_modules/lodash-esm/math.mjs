@@ -1,0 +1,16 @@
+export { default as add } from './add.mjs';
+export { default as ceil } from './ceil.mjs';
+export { default as divide } from './divide.mjs';
+export { default as floor } from './floor.mjs';
+export { default as max } from './max.mjs';
+export { default as maxBy } from './maxBy.mjs';
+export { default as mean } from './mean.mjs';
+export { default as meanBy } from './meanBy.mjs';
+export { default as min } from './min.mjs';
+export { default as minBy } from './minBy.mjs';
+export { default as multiply } from './multiply.mjs';
+export { default as round } from './round.mjs';
+export { default as subtract } from './subtract.mjs';
+export { default as sum } from './sum.mjs';
+export { default as sumBy } from './sumBy.mjs';
+export { default } from './math.default.mjs';
